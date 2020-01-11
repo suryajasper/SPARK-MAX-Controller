@@ -65,9 +65,36 @@ class Robot : public frc::TimedRobot {
     m_rightFollowMotor.Follow(m_rightLeadMotor);
   }
 
+  void moveForward(double speed) {
+    m_leftLeadMotor.Set(speed);
+    m_rightLeadMotor.Set(speed);
+  }
+
+  void moveBackward(double speed) {
+    m_leftLeadMotor.Set(-speed);
+    m_rightLeadMotor.Set(-speed);
+  }
+
+  void turnLeft(double rotSpeed) {
+    m_leftLeadMotor.Set(-speed);
+    m_rightLeadMotor.Set(speed);
+  }
+
+  void turnRight(double rotSpeed) {
+    m_leftLeadMotor.Set(speed);
+    m_rightLeadMotor.Set(-speed);
+  }
+
+  void stop() {
+    m_leftLeadMotor.StopMotor();
+    m_rightLeadMotor.StopMotor();
+  }
+
   void TeleopPeriodic() {
     // Drive with arcade style
-    m_robotDrive.ArcadeDrive(-m_stick.GetY(), m_stick.GetX());
+    //m_robotDrive.ArcadeDrive(-m_stick.GetY(), m_stick.GetX());
+
+    
   }
 };
 
