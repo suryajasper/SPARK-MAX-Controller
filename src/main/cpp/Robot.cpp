@@ -9,6 +9,7 @@
 #include <frc/TimedRobot.h>
 #include <frc/drive/DifferentialDrive.h>
 #include "rev/CANSparkMax.h"
+using namespace std;
 
 class Robot : public frc::TimedRobot {
   /**
@@ -25,21 +26,16 @@ class Robot : public frc::TimedRobot {
    * these parameters to match your setup
    */
   static const int leftLeadDeviceID = 1, leftFollowDeviceID = 2, rightLeadDeviceID = 3, rightFollowDeviceID = 4;
+  
   rev::CANSparkMax m_leftLeadMotor{leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightLeadMotor{rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_leftFollowMotor{leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFollowMotor{rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
-  /**
-   * In RobotInit() below, we will configure m_leftFollowMotor and m_rightFollowMotor to follow 
-   * m_leftLeadMotor and m_rightLeadMotor, respectively. 
-   * 
-   * Because of this, we only need to pass the lead motors to m_robotDrive. Whatever commands are 
-   * sent to them will automatically be copied by the follower motors
-   */
-  frc::DifferentialDrive m_robotDrive{m_leftLeadMotor, m_rightLeadMotor};
+  rev::CANAnalog m_leftAnalog = m_leftLeadMotor.GetAnalog();
+  rev::CANAnalog m_rightAnalog = m_rightLeadMotor.GetAnalog();
 
-  frc::Joystick m_stick{0};
+  std::vector<std::string> errors = {};
   
  public:
   void RobotInit() {
@@ -105,27 +101,47 @@ class Robot : public frc::TimedRobot {
   }
 
   bool isTurningLeft() {
-    double leftVoltage = m_leftLeadMotor.GetAnalog().GetVoltage();
-    double rightVoltage = m_rightLeadMotor.GetAnalog().GetVoltage();
+    double leftVoltage = m_leftAnalog.GetVoltage();
+    double rightVoltage = m_rightAnalog.GetVoltage();
     
     bool leftTurn = (leftVoltage < 0 && rightVoltage > 0)
     return leftTurn;
   }
 
   bool isTurningRight() {
-    double leftVoltage = m_leftLeadMotor.GetAnalog().GetVoltage();
-    double rightVoltage = m_rightLeadMotor.GetAnalog().GetVoltage();
+    double leftVoltage = m_leftAnalog.GetVoltage();
+    double rightVoltage = m_rightAnalog.GetVoltage();
 
     bool rightTurn = (leftVoltage > 0 && rightVoltage < 0)
     return rightTurn;
   }
 
   void TeleopPeriodic() {
+
     // testing forward motion
     moveForward(1);
-    if (isMovingForward()) {
+    if (!isMovingForward())
+      errors.push_back("Forward test failed");
+    stop();
 
-    }
+    // testing backward motion
+    moveBackward(1);
+    if (!isMovingBackward())
+      errors.push_back("Backward test failed");
+    stop();
+
+    // testing left turns
+    turnLeft();
+    if (!isTurningLeft())
+      errors.push_back("Left turn test failed");
+    stop();
+
+    // testing right turns
+    turnRight();
+    if (!isTurningRight())
+      errors.push_back("Right turn test failed");
+    stop();
+
   }
 };
 
