@@ -28,8 +28,8 @@ void Robot::RobotInit() {
    * This is shown in the example below, where one motor on each side of our drive train is
    * configured to follow a lead motor.
    */
-  m_leftFollowMotor->Follow(m_leftLeadMotor);
-  m_rightFollowMotor->Follow(m_rightLeadMotor);
+  m_leftFollowMotor->Follow(&&m_leftLeadMotor);
+  m_rightFollowMotor->Follow(&&m_rightLeadMotor);
 }
 
 void Robot::RobotPeriodic() {}
@@ -64,30 +64,30 @@ void Robot::stop() {
 }
 
 bool Robot::isMovingForward() {
-  bool posVoltage = m_leftAnalog->GetVoltage() > 0 && 
-                    m_rightAnalog->GetVoltage() > 0;
+  bool posVoltage = m_leftAnalog.GetVoltage() > 0 && 
+                    m_rightAnalog.GetVoltage() > 0;
 
   return posVoltage;
 }
 
 bool Robot::isMovingBackward() {
-  bool negVoltage = m_leftAnalog->GetVoltage() < 0 && 
-                    m_rightAnalog->GetVoltage() < 0;
+  bool negVoltage = m_leftAnalog.GetVoltage() < 0 && 
+                    m_rightAnalog.GetVoltage() < 0;
 
   return negVoltage;
 }
 
 bool Robot::isTurningLeft() {
-  double leftVoltage = m_leftAnalog->GetVoltage();
-  double rightVoltage = m_rightAnalog->GetVoltage();
+  double leftVoltage = m_leftAnalog.GetVoltage();
+  double rightVoltage = m_rightAnalog.GetVoltage();
   
   bool leftTurn = (leftVoltage < 0 && rightVoltage > 0);
   return leftTurn;
 }
 
 bool Robot::isTurningRight() {
-  double leftVoltage = m_leftAnalog->GetVoltage();
-  double rightVoltage = m_rightAnalog->GetVoltage();
+  double leftVoltage = m_leftAnalog.GetVoltage();
+  double rightVoltage = m_rightAnalog.GetVoltage();
 
   bool rightTurn = (leftVoltage > 0 && rightVoltage < 0);
   return rightTurn;

@@ -38,13 +38,13 @@ class Robot : public frc::TimedRobot {
  private:
   static const int leftLeadDeviceID = 1, leftFollowDeviceID = 2, rightLeadDeviceID = 3, rightFollowDeviceID = 4;
 
-  rev::CANSparkMax* m_leftLeadMotor = new rev::CANSparkMax(leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushles);
+  rev::CANSparkMax* m_leftLeadMotor = new rev::CANSparkMax(leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_rightLeadMotor = new rev::CANSparkMax(rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_leftFollowMotor = new rev::CANSparkMax(leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_rightFollowMotor = new rev::CANSparkMax(rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
 
-  rev::CANAnalog* m_leftAnalog = m_leftLeadMotor->GetAnalog();
-  rev::CANAnalog* m_rightAnalog = m_rightLeadMotor->GetAnalog();
+  rev::CANAnalog m_leftAnalog = m_leftLeadMotor->GetAnalog();
+  rev::CANAnalog m_rightAnalog = m_rightLeadMotor->GetAnalog();
 
   std::vector<std::string> errors = {};
 };
