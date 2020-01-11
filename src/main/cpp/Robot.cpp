@@ -87,15 +87,15 @@ class Robot : public frc::TimedRobot {
   }
 
   bool isMovingForward() {
-    bool posVoltage = m_leftLeadMotor.GetAnalog().GetVoltage() > 0 && 
-                      m_rightLeadMotor.GetAnalog().GetVoltage() > 0;
+    bool posVoltage = m_leftAnalog.GetVoltage() > 0 && 
+                      m_rightAnalog.GetVoltage() > 0;
 
     return posVoltage;
   }
 
   bool isMovingBackward() {
-    bool negVoltage = m_leftLeadMotor.GetAnalog().GetVoltage() < 0 && 
-                      m_rightLeadMotor.GetAnalog().GetVoltage() < 0;
+    bool negVoltage = m_leftAnalog.GetVoltage() < 0 && 
+                      m_rightAnalog.GetVoltage() < 0;
 
     return negVoltage;
   }
