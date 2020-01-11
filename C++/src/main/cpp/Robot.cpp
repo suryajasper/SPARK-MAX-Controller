@@ -90,6 +90,36 @@ class Robot : public frc::TimedRobot {
     m_rightLeadMotor.StopMotor();
   }
 
+  bool isMovingForward() {
+    bool posVoltage = m_leftLeadMotor.GetAnalog().GetVoltage() > 0 && 
+                      m_rightLeadMotor.GetAnalog().GetVoltage() > 0;
+
+    return posVoltage;
+  }
+
+  bool isMovingBackward() {
+    bool negVoltage = m_leftLeadMotor.GetAnalog().GetVoltage() < 0 && 
+                      m_rightLeadMotor.GetAnalog().GetVoltage() < 0;
+
+    return negVoltage;
+  }
+
+  bool isTurningLeft() {
+    double leftVoltage = m_leftLeadMotor.GetAnalog().GetVoltage();
+    double rightVoltage = m_rightLeadMotor.GetAnalog().GetVoltage();
+    
+    bool leftTurn = (leftVoltage < 0 && rightVoltage > 0)
+    return leftTurn;
+  }
+
+  bool isTurningRight() {
+    double leftVoltage = m_leftLeadMotor.GetAnalog().GetVoltage();
+    double rightVoltage = m_rightLeadMotor.GetAnalog().GetVoltage();
+
+    bool rightTurn = (leftVoltage > 0 && rightVoltage < 0)
+    return rightTurn;
+  }
+
   void TeleopPeriodic() {
     // Drive with arcade style
     //m_robotDrive.ArcadeDrive(-m_stick.GetY(), m_stick.GetX());
