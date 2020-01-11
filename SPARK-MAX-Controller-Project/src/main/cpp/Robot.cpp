@@ -5,10 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <frc/Joystick.h>
 #include <frc/TimedRobot.h>
-#include <frc/drive/DifferentialDrive.h>
 #include "rev/CANSparkMax.h"
+
 using namespace std;
 
 class Robot : public frc::TimedRobot {
@@ -72,15 +71,15 @@ class Robot : public frc::TimedRobot {
   }
 
   void turnLeft(double rotSpeed) {
-    m_leftLeadMotor.Set(-speed);
-    m_rightLeadMotor.Set(speed);
+    m_leftLeadMotor.Set(-rotSpeed);
+    m_rightLeadMotor.Set(rotSpeed);
   }
 
   void turnRight(double rotSpeed) {
-    m_leftLeadMotor.Set(speed);
-    m_rightLeadMotor.Set(-speed);
+    m_leftLeadMotor.Set(rotSpeed);
+    m_rightLeadMotor.Set(-rotSpeed);
   }
-
+  
   void stop() {
     m_leftLeadMotor.StopMotor();
     m_rightLeadMotor.StopMotor();
@@ -104,7 +103,7 @@ class Robot : public frc::TimedRobot {
     double leftVoltage = m_leftAnalog.GetVoltage();
     double rightVoltage = m_rightAnalog.GetVoltage();
     
-    bool leftTurn = (leftVoltage < 0 && rightVoltage > 0)
+    bool leftTurn = (leftVoltage < 0 && rightVoltage > 0);
     return leftTurn;
   }
 
@@ -112,7 +111,7 @@ class Robot : public frc::TimedRobot {
     double leftVoltage = m_leftAnalog.GetVoltage();
     double rightVoltage = m_rightAnalog.GetVoltage();
 
-    bool rightTurn = (leftVoltage > 0 && rightVoltage < 0)
+    bool rightTurn = (leftVoltage > 0 && rightVoltage < 0);
     return rightTurn;
   }
 
@@ -131,13 +130,13 @@ class Robot : public frc::TimedRobot {
     stop();
 
     // testing left turns
-    turnLeft();
+    turnLeft(1);
     if (!isTurningLeft())
       errors.push_back("Left turn test failed");
     stop();
 
     // testing right turns
-    turnRight();
+    turnRight(1);
     if (!isTurningRight())
       errors.push_back("Right turn test failed");
     stop();
