@@ -52,11 +52,11 @@ void Robot::move(int leftOut, int rightOut) {
   double leftDir = m_leftEncoder.GetVelocity();
   double rightDir = m_rightEncoder.GetVelocity();
 
-  string output = "SUCCESS";
-  string stats = " lSet: " + std::to_string(leftOut ) + 
-                 " rSet: " + std::to_string(rightOut) +
-                 " lAct: " + std::to_string(leftDir ) + 
-                 " rAct: " + std::to_string(rightDir);
+  std::string output = "SUCCESS";
+  std::string stats = " lSet: " + std::to_string(leftOut ) + 
+                      " rSet: " + std::to_string(rightOut) +
+                      " lAct: " + std::to_string(leftDir ) + 
+                      " rAct: " + std::to_string(rightDir);
 
   if (leftOut > rightOut && leftDir < rightDir)
     output = ("right FAIL");
@@ -81,12 +81,12 @@ void Robot::stop() {
 }
 
 /** Takes a string as a parameter and writes it 
- * to the file where the match data is stored
+ *  to the file where the match data is stored
 */
-void Robot::writeToFile(string info) {
+void Robot::writeToFile(std::string info) {
   motorData.open(filePath);
 
-  if (motorData.is_open)
+  if (motorData.is_open())
     motorData << info + "\n";
 
   motorData.close();

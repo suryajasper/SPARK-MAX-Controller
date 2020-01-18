@@ -15,6 +15,8 @@
 #include <rev/CANSparkMax.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+using namespace std;
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -25,7 +27,7 @@ class Robot : public frc::TimedRobot {
   void TeleopPeriodic() override;
   void TestPeriodic() override;
 
-  void writeToFile(string info);
+  void writeToFile(std::string info);
 
   void move(int leftMotorOutput, int rightMotorOutput);
   void stop();
@@ -43,5 +45,5 @@ class Robot : public frc::TimedRobot {
   rev::CANEncoder m_rightEncoder = m_rightLeadMotor->GetEncoder();
 
   ofstream motorData; // used to write to the text file
-  string filePath = "motorData.txt"; // link to text file that stores the match data
+  std::string filePath = "motorData.txt"; // link to text file that stores the match data
 };
