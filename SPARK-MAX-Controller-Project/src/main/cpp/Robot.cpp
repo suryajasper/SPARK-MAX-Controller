@@ -28,34 +28,51 @@ void Robot::RobotInit() {
    * This is shown in the example below, where one motor on each side of our drive train is
    * configured to follow a lead motor.
    */
-  m_leftFollowMotor->Follow(&&m_leftLeadMotor);
-  m_rightFollowMotor->Follow(&&m_rightLeadMotor);
+  m_leftFollowMotor->Follow(*m_leftLeadMotor);
+  m_rightFollowMotor->Follow(*m_rightLeadMotor);
 }
 
+// overriding all functions of inherited class
 void Robot::RobotPeriodic() {}
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TestPeriodic() {}
 
-void Robot::moveForward(double speed) {
-  m_leftLeadMotor->Set(speed);
-  m_rightLeadMotor->Set(speed);
-}
+/** Moves the robot by setting the velocity of the left and right motors
+ *  velocity of the left and right motors are specified by the parameters
+ *  Verifies that the robot is moving in the right direction and stores
+ *  Successes and failures in a file
+*/
+void Robot::move(int leftOut, int rightOut) {
 
-void Robot::moveBackward(double speed) {
-  m_leftLeadMotor->Set(-speed);
-  m_rightLeadMotor->Set(-speed);
-}
+  m_leftLeadMotor->Set(leftOut);
+  m_rightLeadMotor->Set(rightOut);
 
-void Robot::turnLeft(double rotSpeed) {
-  m_leftLeadMotor->Set(-rotSpeed);
-  m_rightLeadMotor->Set(rotSpeed);
-}
+  double leftDir = m_leftEncoder.GetVelocity();
+  double rightDir = m_rightEncoder.GetVelocity();
 
-void Robot::turnRight(double rotSpeed) {
-  m_leftLeadMotor->Set(rotSpeed);
-  m_rightLeadMotor->Set(-rotSpeed);
+  string output = "SUCCESS";
+  string stats = " lSet: " + std::to_string(leftOut ) + 
+                 " rSet: " + std::to_string(rightOut) +
+                 " lAct: " + std::to_string(leftDir ) + 
+                 " rAct: " + std::to_string(rightDir);
+
+  if (leftOut > rightOut && leftDir < rightDir)
+    output = ("right FAIL");
+  
+  if (leftOut < rightOut && leftDir > rightDir)
+    output = ("left FAIL");
+  
+  if (leftOut == rightOut && leftDir != rightDir) {
+    if (leftOut < 0)
+      output = ("back FAIL");
+    else
+      output = ("forward FAIL");
+  }
+
+  writeToFile(output + stats);
+
 }
 
 void Robot::stop() {
@@ -63,60 +80,34 @@ void Robot::stop() {
   m_rightLeadMotor->StopMotor();
 }
 
-bool Robot::isMovingForward() {
-  bool posVoltage = m_leftAnalog.GetVoltage() > 0 && 
-                    m_rightAnalog.GetVoltage() > 0;
+/** Takes a string as a parameter and writes it 
+ * to the file where the match data is stored
+*/
+void Robot::writeToFile(string info) {
+  motorData.open(filePath);
 
-  return posVoltage;
-}
+  if (motorData.is_open)
+    motorData << info + "\n";
 
-bool Robot::isMovingBackward() {
-  bool negVoltage = m_leftAnalog.GetVoltage() < 0 && 
-                    m_rightAnalog.GetVoltage() < 0;
-
-  return negVoltage;
-}
-
-bool Robot::isTurningLeft() {
-  double leftVoltage = m_leftAnalog.GetVoltage();
-  double rightVoltage = m_rightAnalog.GetVoltage();
-  
-  bool leftTurn = (leftVoltage < 0 && rightVoltage > 0);
-  return leftTurn;
-}
-
-bool Robot::isTurningRight() {
-  double leftVoltage = m_leftAnalog.GetVoltage();
-  double rightVoltage = m_rightAnalog.GetVoltage();
-
-  bool rightTurn = (leftVoltage > 0 && rightVoltage < 0);
-  return rightTurn;
+  motorData.close();
 }
 
 void Robot::TeleopPeriodic() {
 
   // testing forward motion
-  moveForward(1);
-  if (!isMovingForward())
-    errors.push_back("Forward test failed");
+  move(1, 1);
   stop();
 
   // testing backward motion
-  moveBackward(1);
-  if (!isMovingBackward())
-    errors.push_back("Backward test failed");
+  move(-1, -1);
   stop();
 
   // testing left turns
-  turnLeft(1);
-  if (!isTurningLeft())
-    errors.push_back("Left turn test failed");
+  move(-1, 1);
   stop();
 
   // testing right turns
-  turnRight(1);
-  if (!isTurningRight())
-    errors.push_back("Right turn test failed");
+  move(1, -1);
   stop();
 
 }

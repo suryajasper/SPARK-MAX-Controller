@@ -8,6 +8,8 @@
 #pragma once
 
 #include <string>
+#include <iostream>
+#include <fstream>
 
 #include <frc/TimedRobot.h>
 #include <rev/CANSparkMax.h>
@@ -23,28 +25,23 @@ class Robot : public frc::TimedRobot {
   void TeleopPeriodic() override;
   void TestPeriodic() override;
 
-  void moveForward(double speed);
-  void moveBackward(double speed);
-  void turnLeft(double rotSpeed);
-  void turnRight(double rotSpeed);
+  void writeToFile(string info);
 
+  void move(int leftMotorOutput, int rightMotorOutput);
   void stop();
-
-  bool isMovingForward();
-  bool isMovingBackward();
-  bool isTurningLeft();
-  bool isTurningRight();
   
  private:
   static const int leftLeadDeviceID = 1, leftFollowDeviceID = 2, rightLeadDeviceID = 3, rightFollowDeviceID = 4;
-
+  // the spark max motors
   rev::CANSparkMax* m_leftLeadMotor = new rev::CANSparkMax(leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_rightLeadMotor = new rev::CANSparkMax(rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_leftFollowMotor = new rev::CANSparkMax(leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
   rev::CANSparkMax* m_rightFollowMotor = new rev::CANSparkMax(rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless);
 
-  rev::CANAnalog m_leftAnalog = m_leftLeadMotor->GetAnalog();
-  rev::CANAnalog m_rightAnalog = m_rightLeadMotor->GetAnalog();
+  // encoders to track velocity of each motor (positive or negative rpm)
+  rev::CANEncoder m_leftEncoder = m_leftLeadMotor->GetEncoder();
+  rev::CANEncoder m_rightEncoder = m_rightLeadMotor->GetEncoder();
 
-  std::vector<std::string> errors = {};
+  ofstream motorData; // used to write to the text file
+  string filePath = "motorData.txt"; // link to text file that stores the match data
 };
